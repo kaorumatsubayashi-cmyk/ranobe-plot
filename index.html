@@ -81,6 +81,10 @@ footer{margin-top:40px;padding-top:18px;border-top:1px solid var(--line);font-si
 .note.warn{border-left-color:#e0a800;background:#fffaf0;color:#6a4b00}
 #saveWarn{display:none;margin-top:14px;font-size:13px;font-weight:700;color:var(--warn);background:#fffaf0;border:1px solid #f0d9a0;border-radius:10px;padding:10px 13px}
 #saveWarn.on{display:block}
+.f.sub{margin-top:-6px}
+.f.sub label{font-weight:400;font-size:12px;color:var(--sub)}
+.f.sub input{font-size:14px;padding:7px 10px}
+#delNote{display:none;margin-top:12px;font-size:13px;background:#f6f3ff;border:1px solid #d9ccff;border-radius:10px;padding:10px 13px}
 .draft{background:#fff8dc!important;border-color:#e0b000!important}
 .f.isdraft > label{cursor:pointer}
 .f.isdraft > label::after{content:"AI仮案・押すと承認";display:inline-block;white-space:nowrap;margin:2px 0 0 8px;font-size:11px;font-weight:700;color:#7a5600;background:#ffe9a8;border-radius:999px;padding:1px 8px}
@@ -230,23 +234,26 @@ footer{margin-top:40px;padding-top:18px;border-top:1px solid var(--line);font-si
       <div class="f"><label for="climax">クライマックス</label><textarea id="climax"></textarea></div>
     </div>
     <div class="grid3">
-      <div class="f"><label for="age2">読者の年齢層</label><select id="age2">
+      <div><div class="f"><label for="age2">読者の年齢層</label><select id="age2">
         <option value="">（シートに従う）</option>
         <option>中学生</option><option>高校生</option><option>大学生・20代前半</option>
         <option>20代後半〜30代</option><option>全年齢</option></select></div>
-      <div class="f"><label for="gender2">読者の傾向</label><select id="gender2">
+        <div class="f sub"><label for="age2x">選択肢にないときはこちら</label><input type="text" id="age2x" placeholder="例：40代の働く女性"></div></div>
+      <div><div class="f"><label for="gender2">読者の傾向</label><select id="gender2">
         <option value="">（シートに従う）</option>
         <option>男性向け</option><option>女性向け</option><option>どちらも</option></select></div>
+        <div class="f sub"><label for="gender2x">選択肢にないときはこちら</label><input type="text" id="gender2x" placeholder="例：親子で一緒に読む"></div></div>
       <div class="f"><label for="venue2">発表先</label><input type="text" id="venue2"></div>
     </div>
     <div class="f"><label for="persona2">読者像（ペルソナ）</label><textarea id="persona2"></textarea></div>
     <div class="grid3">
       <div class="f"><label for="total2">総文字数 <small>空欄可</small></label><input type="number" id="total2" min="2000" max="2000000" step="1000" placeholder="シートに従う"></div>
       <div class="f"><label for="per2">1話あたりの文字数 <small>空欄可</small></label><input type="number" id="per2" min="300" max="40000" step="100" placeholder="シートに従う"></div>
-      <div class="f"><label for="form2">想定する形態</label><select id="form2">
+      <div><div class="f"><label for="form2">想定する形態</label><select id="form2">
         <option value="">（シートに従う）</option>
         <option>新人賞応募（1冊で完結）</option><option>Web連載（1話ずつ更新）</option>
         <option>短編・読切</option><option>シリーズ1巻目（続刊あり）</option></select></div>
+        <div class="f sub"><label for="form2x">選択肢にないときはこちら</label><input type="text" id="form2x" placeholder="例：短編集（全3編）"></div></div>
     </div>
     <div class="calc plain" id="calc2"></div>
     <div class="note warn" id="splitNote" style="display:none"></div>
@@ -282,6 +289,8 @@ footer{margin-top:40px;padding-top:18px;border-top:1px solid var(--line);font-si
     </div>
     <div id="draftNote">承認されていないAI仮案が <b id="draftCount">0</b> 件あります（黄色の欄）。このままコピーすると、AIには未確定の案として渡ります。
       <div style="margin-top:8px"><button class="btn small" id="approveAll" type="button">AI仮案をすべて承認する</button></div></div>
+    <div id="delNote"><strong>削除の指定</strong>（設定シートのこの記述は使いません）<div id="delList" style="margin:6px 0"></div>
+      <button class="btn small ghost" id="undoDel" type="button">削除指定をすべて取り消す</button></div>
     <div class="actions" style="margin-top:12px">
       <button class="btn pink" id="copy2" type="button">第2段階のプロンプトをコピー</button>
       <button class="btn small ghost" id="clear2" type="button">この段階の入力を消す</button>
@@ -370,8 +379,10 @@ function personFields(){
     </div>
     <div class="grid3">
       <div class="f"><label>名前</label><input type="text" data-k="name" placeholder="例：音無 ひより"></div>
-      <div class="f"><label>主人公との関係</label><select data-k="rel">${rel}</select></div>
-      <div class="f"><label>物語上の役割</label><select data-k="arch">${arc}</select></div>
+      <div><div class="f"><label>主人公との関係</label><select data-k="rel">${rel}</select></div>
+        <div class="f sub"><label>選択肢にないときはこちら</label><input type="text" data-k="relx" placeholder="例：元ライバル"></div></div>
+      <div><div class="f"><label>物語上の役割</label><select data-k="arch">${arc}</select></div>
+        <div class="f sub"><label>選択肢にないときはこちら</label><input type="text" data-k="archx" placeholder="例：語り部"></div></div>
     </div>
     <div class="grid2">
       <div class="f"><label>関係性の内容 <small>いつから、なぜ、いまどうなっているか</small></label><textarea data-k="reldetail"></textarea></div>
@@ -438,7 +449,7 @@ function renumber(){
 const F1=['title','genre','idea','theme','heroImage','mood','avoid','age','gender','venue','persona','refs','total','per','form'];
 const F2=['sheet','sheetAdd','avoid2','title2','genreMain','genre2','concept','logline','theme2','ending',
           'stage_','rules','tags','appeal','opening','climax',
-          'age2','gender2','venue2','persona2','total2','per2','form2','notes'];
+          'age2','age2x','gender2','gender2x','venue2','persona2','total2','per2','form2','form2x','notes'];
 const DEFAULTS={age:'高校生',gender:'男性向け',form:'Web連載（1話ずつ更新）',total:'100000',per:'3000'};
 function val(k){ const e=$(k); return e?e.value.trim():''; }
 function heroData(){ const o={}; $('hero').querySelectorAll('[data-k]').forEach(e=>o[e.dataset.k]=e.value.trim()); return o; }
@@ -481,9 +492,49 @@ function updateDraftNote(){
   box.style.display=n?'block':'none';
   $('draftCount').textContent=String(n);
 }
+/* プルダウンと「選択肢にないときはこちら」は、同じ一つの項目の二つの入れ方。
+   片方を入れたとき、もう片方に値が残っていれば、どちらを使うか作者に決めてもらう */
+function pairOf(el){
+  if(!el) return null;
+  if(el.id&&/^(age2|gender2|form2)x?$/.test(el.id)) return $(el.id.endsWith('x')?el.id.slice(0,-1):el.id+'x');
+  const k=el.dataset&&el.dataset.k, card=el.closest&&el.closest('#people > .person');
+  if(card&&k&&/^(rel|arch)x?$/.test(k)) return card.querySelector('[data-k="'+(k.endsWith('x')?k.slice(0,-1):k+'x')+'"]');
+  return null;
+}
+function pairCheck(el){
+  const other=pairOf(el); if(!other) return;
+  const mine=String(el.value||'').trim(), theirs=String(other.value||'').trim();
+  if(!mine||!theirs) return;
+  const isSel=el.tagName==='SELECT';
+  const sel=isSel?el:other, txt=isSel?other:el;
+  const keepSelected=isSel;
+  const q=keepSelected
+    ? `「${labelOf(sel)}」で「${sel.value}」を選びました。下の欄の「${txt.value.trim()}」は消して、「${sel.value}」だけにしますか？\n（キャンセルすると「${txt.value.trim()}」を残し、選択を元に戻します）`
+    : `「${txt.value.trim()}」と書きました。上の選択「${sel.value}」は外して、この記述だけにしますか？\n（キャンセルすると選択を残し、この記述は消します）`;
+  if(confirm(q)){
+    if(keepSelected){ txt.value=''; setDraft(txt,false); } else { sel.selectedIndex=0; setDraft(sel,false); }
+  } else {
+    if(keepSelected){ sel.selectedIndex=0; setDraft(sel,false); } else { txt.value=''; setDraft(txt,false); }
+  }
+  updateDraftNote(); save();
+}
 /* 作者が手を入れた項目は、作者の決定として扱う */
 function onEdit(e){
   const el=e.target;
+  if(el.id==='total2'||el.id==='per2') sizeIssues=sizeIssues.filter(x=>x.id!==el.id);
+  if(deletions.length&&String(el.value||'').trim()){
+    const k=keyOf(el); const n=deletions.length;
+    deletions=deletions.filter(d=>d.key!==k);
+    if(el.dataset&&el.dataset.k==='name'&&el.closest('#people')){
+      const nm=el.value.trim();
+      if(deletions.some(d=>d.scope==='gone'&&d.name===nm)){
+        deletions=deletions.filter(d=>!(d.scope==='gone'&&d.name===nm));
+        setStatus(2,`「${nm}」の「登場させない」指定を取り消しました。この人物カードは、シートの「${nm}」への上書きとして扱います。`,'ok');
+      }
+    }
+    if(deletions.length!==n) updateDelNote();
+  }
+  if(e.type==='change') pairCheck(el);
   if(isDraftEl(el)){ setDraft(el,false); updateDraftNote(); }
   save();
 }
@@ -502,16 +553,22 @@ function markedOf(root){
 }
 
 function collect(){
-  const o={_app:'ranobe-plot-maker',_ver:7,hero:heroData(),people:peopleData(),_pids:peoplePids()};
+  const o={_app:'ranobe-plot-maker',_ver:10,hero:heroData(),people:peopleData(),_pids:peoplePids()};
   F1.concat(F2).forEach(k=>o[k]=val(k));
   o._expanded=expanded?'1':''; o._mode=mode2();
   o._drafts=[...drafts];
   o._snap=expandSnap||null;
+  o._expSheet=expandedSheet;
+  o._sizeIssues=sizeIssues;
+  o._orig=[...$('people').children].map(el=>el.dataset.orig||'');
+  o._conflicts=conflicts;
+  o._deletions=deletions;
   return o;
 }
 
-const KEY='ranobe-plot-maker-v7';
-const OLD_KEYS=['ranobe-plot-maker-v6','ranobe-plot-maker-v5','ranobe-plot-maker-v4'];
+const KEY='ranobe-plot-maker-v10';
+/* 旧版の保存は読むだけで、書き換えない */
+const OLD_KEYS=['ranobe-plot-maker-v9','ranobe-plot-maker-v8','ranobe-plot-maker-v7','ranobe-plot-maker-v6','ranobe-plot-maker-v5','ranobe-plot-maker-v4'];
 let saveBroken=false;
 function save(){
   try{ localStorage.setItem(KEY,JSON.stringify(collect())); if(saveBroken){saveBroken=false;$('saveWarn').classList.remove('on');} }
@@ -523,6 +580,7 @@ function resetAll(){
   renderHero();
   $('people').innerHTML=''; pidSeq=0;
   drafts=new Set(); expandSnap=null; expanded=false;
+  expandedSheet=null; sizeIssues=[]; conflicts=[]; deletions=[];
 }
 /* 保存データ・控えを画面に戻す。いったん全項目を初期値に戻してから入れるので、前の作品の値は残らない */
 function apply(d){
@@ -535,6 +593,7 @@ function apply(d){
     if(!isObj(p)||$('people').children.length>=MAXP) return;
     const el=addPerson(pids[i]); if(!el) return;
     el.querySelectorAll('[data-k]').forEach(e=>{ if(typeof p[e.dataset.k]==='string') e.value=p[e.dataset.k]; });
+    if(Array.isArray(d._orig)&&typeof d._orig[i]==='string'&&d._orig[i]) el.dataset.orig=d._orig[i];
   });
   if(!$('people').children.length) addPerson();
   if(d._mode==='once'||d._mode==='talk'){
@@ -546,14 +605,25 @@ function apply(d){
     expandSnap={sheet:String(d._snap.sheet||''),fields:d._snap.fields,
                 hero:isObj(d._snap.hero)?d._snap.hero:{},people:isObj(d._snap.people)?d._snap.people:{}};
   }
+  if(expanded){
+    expandedSheet=typeof d._expSheet==='string'?d._expSheet
+                 :(expandSnap&&typeof expandSnap.sheet==='string')?expandSnap.sheet
+                 :val('sheet');   /* 記録がなければ、いまのシートを基準にする */
+    if(Array.isArray(d._sizeIssues)) sizeIssues=d._sizeIssues.filter(x=>isObj(x)&&(x.id==='total2'||x.id==='per2')&&!val(x.id))
+      .map(x=>({id:x.id,label:String(x.label||''),raw:String(x.raw||'')}));
+  }
   if(Array.isArray(d._drafts)) d._drafts.forEach(k=>{ if(typeof k==='string') drafts.add(k); });
-  renumber(); updateCalc(); paintAll(); checkSheetDrift();
+  if(expanded&&Array.isArray(d._conflicts)) conflicts=d._conflicts.filter(x=>isObj(x)&&typeof x.key==='string'&&typeof x.value==='string')
+    .map(x=>({key:x.key,value:x.value,label:String(x.label||'')}));
+  if(!expanded&&Array.isArray(d._deletions)) deletions=d._deletions.filter(x=>isObj(x)&&typeof x.key==='string'&&['work','hero','person','gone'].indexOf(x.scope)>=0)
+    .map(x=>({key:x.key,scope:x.scope,label:String(x.label||''),name:String(x.name||'')}));
+  renumber(); updateCalc(); paintAll(); updateDelNote(); checkSheetDrift();
 }
 function readKey(k){ try{ const d=JSON.parse(localStorage.getItem(k)||'null'); return isObj(d)?d:null; }catch(e){ return null; } }
 function restore(){
   const d=readKey(KEY);
   if(d){ apply(d); return true; }
-  /* 旧版（v6→v5→v4の順）の保存があれば引き継ぐ。旧版の保存は消さない */
+  /* 旧版（新しい順）の保存があれば引き継ぐ。旧版の保存は消さない */
   for(const k of OLD_KEYS){ const o=readKey(k); if(o){ apply(o); save(); return true; } }
   return false;
 }
@@ -579,6 +649,34 @@ function nums2(){
   if(total===null||per===null) return null;   /* 片方だけでは話数が出せない */
   if(per>total) per=total;
   return {total,per,eps:Math.max(1,Math.round(total/per))};
+}
+/* 有効な分量を一か所で決める。
+   総文字数・1話あたりのそれぞれについて：作者が欄に書いた値 → 作者の削除指定（未定。シートの値は使わない）→ 設定シートの値
+   展開中は欄だけが正なので、シートは見ない */
+function effSize(){
+  const ft=clampInt(val('total2'),...LIM.total), fp=clampInt(val('per2'),...LIM.per);
+  const src={total:null,per:null};
+  let total=ft, per=fp;
+  if(ft!==null) src.total='author';
+  if(fp!==null) src.per='author';
+  const delT=!expanded&&ft===null&&deletions.some(d=>d.key==='f:total2');
+  const delP=!expanded&&fp===null&&deletions.some(d=>d.key==='f:per2');
+  if(!expanded&&((total===null&&!delT)||(per===null&&!delP))){
+    const raw=val('sheet');
+    if(raw){
+      const d=parseSheet(raw), t=parseAmount(d.size.total2), q=parseAmount(d.size.per2);
+      if(total===null&&!delT&&t.ok){ total=Math.max(LIM.total[0],Math.min(LIM.total[1],t.value)); src.total='sheet'; }
+      if(per===null&&!delP&&q.ok){ per=Math.max(LIM.per[0],Math.min(LIM.per[1],q.value)); src.per='sheet'; }
+    }
+  }
+  const out={total,per,src,deleted:{total:delT,per:delP},ok:false};
+  if(total!==null&&per!==null){ out.per=Math.min(per,total); out.eps=Math.max(1,Math.round(total/out.per)); out.ok=true; }
+  return out;
+}
+function srcNote(es){
+  const name={author:'作者の指定',sheet:'設定シートの値'};
+  if(!es.ok||es.src.total===es.src.per) return '';
+  return `（総文字数は${name[es.src.total]}、1話あたりは${name[es.src.per]}）`;
 }
 function halfFilled2(){
   const a=clampInt(val('total2'),...LIM.total), b=clampInt(val('per2'),...LIM.per);
@@ -622,15 +720,19 @@ function calcHtml(n){
 }
 function updateCalc(){
   $('calc').innerHTML=calcHtml(nums1());
-  const n2=nums2();
-  $('calc2').innerHTML=(!n2&&halfFilled2())
-    ? '総文字数と1話あたりの文字数は、両方そろって初めて話数が出せます。片方だけのときは分量の上書きをせず、設定シートの指定に従います。'
-    : calcHtml(n2);
-  $('calc2').className='calc'+(n2?'':' plain');
+  const es=effSize();
+  const und=[es.deleted.total?'総文字数':'',es.deleted.per?'1話あたりの文字数':''].filter(Boolean);
+  let h;
+  if(es.ok) h=calcHtml(es)+(srcNote(es)?'<br>'+srcNote(es):'');
+  else if(und.length) h=`${und.join('と')}は削除の指定があるため未定です。設定シートの値は使わず、AIが仮の値を置いて確認を求めるプロンプトになります。`;
+  else if(halfFilled2()) h='総文字数と1話あたりの文字数は、両方そろって初めて話数が出せます。'+(expanded?'もう一方も入れてください。':'もう一方は設定シートの値を使いますが、シートにも書かれていません。');
+  else h=calcHtml(null);
+  $('calc2').innerHTML=h;
+  $('calc2').className='calc'+(es.ok?'':' plain');
   const note=$('splitNote');
-  if(n2&&n2.eps>CHUNK){
+  if(es.ok&&es.eps>CHUNK){
     note.style.display='block';
-    note.innerHTML=`約${n2.eps}話は一度に出力しきれないため、話数割りは${CHUNK}話ずつに分けて出すプロンプトになります。AIの出力が止まったら「続き」と伝えると次の${CHUNK}話が出ます。`;
+    note.innerHTML=`約${es.eps}話は一度に出力しきれないため、話数割りは${CHUNK}話ずつに分けて出すプロンプトになります。AIの出力が止まったら「続き」と伝えると次の${CHUNK}話が出ます。`;
   } else note.style.display='none';
   save();
 }
@@ -821,27 +923,30 @@ function build1(){
 }
 
 /* ── 設定シートを下の欄に展開する ── */
-const SHEET_WORK={'作品名':'title2','ジャンル':'genreMain','サブジャンル':'genre2','一行コンセプト':'concept',
-  'ログライン':'logline','テーマ':'theme2','読後感':'ending','売りになる要素':'tags','舞台':'stage_',
-  '世界のきまり':'rules','冒頭の第一場面':'opening','クライマックス':'climax','禁止事項':'avoid2'};
+/* 設定シートの項目名。前方一致はせず、ここに書いた名前（括弧と中黒を除いたもの）だけを受け付ける */
+const SHEET_WORK={'作品名':'title2','ジャンル':'genreMain','サブジャンル掛け合わせ':'genre2','サブジャンル':'genre2',
+  '一行コンセプト':'concept','ログライン':'logline','テーマ':'theme2','読後感':'ending','売りになる要素':'tags','舞台':'stage_',
+  '世界のきまり':'rules','冒頭の第一場面':'opening','クライマックス':'climax',
+  '禁止事項絶対に守る条件':'avoid2','禁止事項':'avoid2','絶対に守る条件':'avoid2'};
 const SHEET_READER={'年齢層':'age2','傾向':'gender2','発表先':'venue2','読者像':'persona2','この読者に効く要素':'appeal'};
-const SHEET_SIZE={'総文字数':'total2','1話あたり':'per2','形態':'form2'};
-const SHEET_PERSON={'名前':'name','本名':'realname','愛称':'nickname','年齢':'age','学年':'grade','立場':'role',
-  '経歴':'history','過去のトラウマ':'trauma','トラウマ':'trauma','得意なこと':'skill','弱点':'flaw','性格':'chara',
-  '容姿':'look','ファッション':'fashion','口調':'voice','口に出す目的':'want','欲求':'want',
+const SHEET_SIZE={'総文字数':'total2','1話あたり':'per2','1話あたりの文字数':'per2','形態':'form2','話数':'_eps'};
+const SHEET_PERSON={'名前':'name','本名':'realname','愛称あだ名':'nickname','愛称':'nickname','あだ名':'nickname',
+  '年齢':'age','学年所属':'grade','学年所属肩書':'grade','学年':'grade','所属':'grade','立場':'role',
+  '経歴':'history','過去のトラウマ':'trauma','トラウマ':'trauma','得意なこと':'skill','得意なこと長所':'skill',
+  '弱点欠点':'flaw','弱点':'flaw','欠点':'flaw','性格':'chara',
+  '容姿':'look','ファッション':'fashion','口調口癖':'voice','口調':'voice','口に出す目的':'want','口に出す目的動機':'want','欲求':'want',
   '本当に欲しいもの':'realwant','秘密':'secret','変化':'arc',
   '主人公との関係':'rel','物語上の役割':'arch','関係性の内容':'reldetail','関係の変化':'relchange'};
+const SECTION_LABEL={work:'作品',reader:'想定読者',size:'分量',hero:'主人公',person:'登場人物'};
 
-function normKey(k){ return k.replace(/[（(][^）)]*[）)]/g,'').replace(/[\s・＊*]/g,'').trim(); }
+function normKey(k){ return String(k).replace(/[（(][^）)]*[）)]/g,'').replace(/[\s・＊*]/g,'').trim(); }
 function pickKey(map,key){
   const k=normKey(key);
-  if(map[k]!==undefined) return map[k];
-  const hit=Object.keys(map).find(x=>k.indexOf(normKey(x))===0);
-  return hit?map[hit]:null;
+  return Object.prototype.hasOwnProperty.call(map,k)?map[k]:null;
 }
 function parseSheet(text){
-  const out={work:{},reader:{},size:{},hero:{},people:[],extra:[]};
-  let sec='', cur=null, lastRef=null;
+  const out={work:{},reader:{},size:{},hero:{},people:[],extra:[],unknown:[],dups:[]};
+  let sec='', cur=null, lastRef=null, lastUnknown=null, lastDup=null, personNo=0;
   text.split(/\r?\n/).forEach(raw=>{
     const line=raw.replace(/^\s+|\s+$/g,'');
     if(!line) return;
@@ -853,9 +958,9 @@ function parseSheet(text){
       else if(t.indexOf('想定読者')===0||t.indexOf('読者')===0) { sec='reader'; cur=out.reader; }
       else if(t.indexOf('分量')===0) { sec='size'; cur=out.size; }
       else if(t.indexOf('主人公')===0) { sec='hero'; cur=out.hero; }
-      else if(t.indexOf('登場人物')===0) { sec='person'; cur={}; out.people.push(cur); }
+      else if(t.indexOf('登場人物')===0) { sec='person'; cur={}; out.people.push(cur); personNo++; }
       else { sec='extra'; cur=null; }
-      lastRef=null;
+      lastRef=null; lastUnknown=null; lastDup=null;
       return;
     }
     if(sec==='extra'){ out.extra.push(line); return; }
@@ -864,13 +969,30 @@ function parseSheet(text){
     if(m){
       const map=sec==='work'?SHEET_WORK:sec==='reader'?SHEET_READER:sec==='size'?SHEET_SIZE:SHEET_PERSON;
       const f=pickKey(map,m[1]);
-      if(f){ cur[f]=m[2].trim(); lastRef=f; }
-      else lastRef=null;
+      if(f&&cur[f]!==undefined&&f!=='_eps'){
+        /* 同じ項目が二度書かれている。どちらも捨てずに記録する */
+        let d=out.dups.find(x=>x.obj===cur&&x.f===f);
+        if(!d){ d={obj:cur,f,sec,personNo,label:m[1].trim(),where:SECTION_LABEL[sec]+(sec==='person'?personNo:''),vals:[cur[f]]}; out.dups.push(d); }
+        d.vals.push(m[2].trim());
+        lastRef=null; lastUnknown=null; lastDup=d;
+      }
+      else if(f){ cur[f]=m[2].trim(); lastRef=f; lastUnknown=null; lastDup=null; }
+      else {
+        /* 知らない項目は、どこにも割り当てずに原文のまま残す */
+        lastRef=null; lastDup=null;
+        lastUnknown={where:SECTION_LABEL[sec]+(sec==='person'?personNo:''),line:line};
+        out.unknown.push(lastUnknown);
+      }
       return;
     }
     if(lastRef&&cur[lastRef]!==undefined) cur[lastRef]=(cur[lastRef]+'\n'+line).trim();
+    else if(lastDup) lastDup.vals[lastDup.vals.length-1]+='\n'+line;
+    else if(lastUnknown) lastUnknown.line+='\n'+line;
   });
-  out.people=out.people.filter(p=>Object.keys(p).length);
+  /* 人物の番号を、空の人物を除いた後の並びに合わせる */
+  const kept=out.people.filter(p=>Object.keys(p).length);
+  out.dups.forEach(d=>{ if(d.sec==='person') d.personIdx=kept.indexOf(d.obj); });
+  out.people=kept;
   return out;
 }
 function zen2han(s){ return String(s).replace(/[！-～]/g,c=>String.fromCharCode(c.charCodeAt(0)-0xFEE0)); }
@@ -904,8 +1026,12 @@ function clearEl(e){ if(!e) return; if(e.tagName==='SELECT') e.selectedIndex=0; 
 
 /* 展開した時点の値の控え。人物は識別番号ごとに持つ。保存データにも入れるので、再読み込み後も使える */
 let expandSnap=null;
+let expandedSheet=null;   /* 展開したときのシート本文。これと違えばコピーを止める */
+let sizeIssues=[];        /* 展開時に読めなかった分量 {id,label,raw} */
+let conflicts=[];         /* 重複していた項目 {key,value,label}：欄が展開時のままなら未整理 */
+let deletions=[];         /* 展開をやめたとき、作者が空欄にしていた項目 {key,scope,label,name} */
 const EXPAND_FIELDS=['title2','genreMain','genre2','concept','logline','theme2','ending','stage_','rules',
-  'tags','appeal','opening','climax','avoid2','age2','gender2','venue2','persona2','total2','per2','form2','notes'];
+  'tags','appeal','opening','climax','avoid2','age2','age2x','gender2','gender2x','venue2','persona2','total2','per2','form2','form2x','notes'];
 function snapshotExpand(){
   const people={};
   [...$('people').children].forEach(el=>{ people[el.dataset.pid]=cardData(el); });
@@ -937,13 +1063,20 @@ function expandSheet(){
 
   /* 前のシートの値と状態が残らないよう、展開対象をいったん空にする */
   EXPAND_FIELDS.forEach(k=>clearEl($(k)));
-  drafts=new Set();
+  drafts=new Set(); conflicts=[]; deletions=[];
 
   const unresolved=[];
   Object.keys(SHEET_WORK).forEach(k=>{ const f=SHEET_WORK[k]; if(d.work[f]!==undefined) putText($(f),d.work[f]); });
-  if(!putSelect($('age2'),d.reader.age2)) unresolved.push(`読者の年齢層「${stripDraft(d.reader.age2)}」は選択肢にないため未設定`);
-  if(!putSelect($('gender2'),d.reader.gender2)) unresolved.push(`読者の傾向「${stripDraft(d.reader.gender2)}」は選択肢にないため未設定`);
+  const selOrText=(selId,txtId,raw,label)=>{
+    if(raw===undefined) return;
+    if(putSelect($(selId),raw)) return;
+    putText($(txtId),raw);
+    unresolved.push(`${label}「${stripDraft(raw)}」は選択肢にないため、「選択肢にないときはこちら」の欄に原文のまま入れました`);
+  };
+  selOrText('age2','age2x',d.reader.age2,'読者の年齢層');
+  selOrText('gender2','gender2x',d.reader.gender2,'読者の傾向');
   ['venue2','persona2','appeal'].forEach(f=>{ if(d.reader[f]!==undefined) putText($(f),d.reader[f]); });
+  sizeIssues=[];
   [['total2','総文字数'],['per2','1話あたりの文字数']].forEach(([f,label])=>{
     const rv=d.size[f]; if(rv===undefined) return;
     const r=parseAmount(rv);
@@ -954,37 +1087,69 @@ function expandSheet(){
       if(hasDraftMark(rv)) setDraft($(f),true);
       if(c!==r.value) unresolved.push(`${label}「${stripDraft(rv)}」（${r.value.toLocaleString('ja-JP')}字）は扱える範囲（${lim[0].toLocaleString('ja-JP')}〜${lim[1].toLocaleString('ja-JP')}字）の外なので、${c.toLocaleString('ja-JP')}字にしました。確かめてください`);
     }
-    else if(r.range) unresolved.push(`${label}「${stripDraft(rv)}」は幅のある書き方なので読み取れません。数字を入れ直してください`);
-    else if(!r.empty) unresolved.push(`${label}「${stripDraft(rv)}」を一つの数字として読めません。入れ直してください`);
+    else if(r.range){ unresolved.push(`${label}「${stripDraft(rv)}」は幅のある書き方なので読み取れません。数字を入れ直してください`); sizeIssues.push({id:f,label,raw:stripDraft(rv)}); }
+    else if(!r.empty){ unresolved.push(`${label}「${stripDraft(rv)}」を一つの数字として読めません。入れ直してください`); sizeIssues.push({id:f,label,raw:stripDraft(rv)}); }
   });
-  if(!putSelect($('form2'),d.size.form2)) unresolved.push(`形態「${stripDraft(d.size.form2)}」は選択肢にないため未設定`);
+  selOrText('form2','form2x',d.size.form2,'形態');
 
   renderHero();
   $('hero').querySelectorAll('[data-k]').forEach(e=>putText(e,d.hero[e.dataset.k]));
   $('people').innerHTML=''; pidSeq=0;
   d.people.forEach((p,idx)=>{
     const el=addPerson(); if(!el) return;
-    el.querySelectorAll('[data-k]').forEach(e=>{
+    const fields=[...el.querySelectorAll('[data-k]')];
+    /* 先に文章の欄を入れ、プルダウンは後から。選択肢にない値は「関係性の内容」の先頭に足す（上書きしない） */
+    fields.filter(e=>e.tagName!=='SELECT').forEach(e=>putText(e,p[e.dataset.k]));
+    fields.filter(e=>e.tagName==='SELECT').forEach(e=>{
       const v=p[e.dataset.k]; if(v===undefined) return;
-      if(e.tagName==='SELECT'){
-        if(!putSelect(e,v)){
-          const rd=el.querySelector('[data-k="reldetail"]');
-          const label=e.dataset.k==='rel'?'主人公との関係':'物語上の役割';
-          if(rd){
-            rd.value=(label+'：'+stripDraft(v)+(rd.value?'\n'+rd.value:'')).trim();
-            if(hasDraftMark(v)) setDraft(rd,true);
-          }
-          unresolved.push(`${stripDraft(p.name)||('登場人物'+(idx+1))}の${label}「${stripDraft(v)}」は選択肢にないため、関係性の内容へそのまま書き写しました`);
-        }
-      } else putText(e,v);
+      if(putSelect(e,v)) return;
+      const x=el.querySelector('[data-k="'+e.dataset.k+'x"]');
+      const label=e.dataset.k==='rel'?'主人公との関係':'物語上の役割';
+      if(x) putText(x,v);
+      unresolved.push(`${stripDraft(p.name)||('登場人物'+(idx+1))}の${label}「${stripDraft(v)}」は選択肢にないため、その下の「選択肢にないときはこちら」の欄に原文のまま入れました`);
     });
   });
   if(!$('people').children.length) addPerson();
   renumber();
-  $('notes').value=d.extra.join('\n');
+  d.dups.forEach(dp=>{
+    let el=null;
+    if(dp.sec==='person'){
+      const card=$('people').children[dp.personIdx];
+      if(card) el=card.querySelector('[data-k="'+dp.f+'"]');
+      if(el&&el.tagName==='SELECT') el=card.querySelector('[data-k="'+dp.f+'x"]')||el;
+    } else if(dp.sec==='hero'){
+      el=$('hero').querySelector('[data-k="'+dp.f+'"]');
+    } else {
+      el=$(dp.f);
+      if(el&&el.tagName==='SELECT'){ clearEl(el); el=$(dp.f+'x'); }
+    }
+    if(!el||el.tagName==='SELECT') return;
+    if(dp.f==='name'){
+      /* 名前は一行の欄なので、候補を並べて入れる。作者が一つに直すまで未整理として扱う */
+      el.value=dp.vals.map(stripDraft).join('／')+'（重複・どちらか一つに）';
+      setDraft(el,true);
+      conflicts.push({key:keyOf(el),value:el.value,label:dp.where+'の'+dp.label});
+      unresolved.push(`${dp.where}の「${dp.label}」が${dp.vals.length}回書かれていました（${dp.vals.map(stripDraft).join('／')}）。どの候補も捨てずに欄へ並べたので、一つにしてください`);
+      return;
+    }
+    el.value='【重複しています。一つに整理してください】\n'+dp.vals.map((v,i)=>`${i+1}つ目：${stripDraft(v)}`).join('\n');
+    setDraft(el,true);
+    conflicts.push({key:keyOf(el),value:el.value,label:dp.where+'の'+dp.label});
+    unresolved.push(`${dp.where}の「${dp.label}」が${dp.vals.length}回書かれていました。どちらも捨てずに欄へ並べたので、一つに整理してください`);
+  });
+  const notes=d.extra.slice();
+  if(d.unknown.length){
+    notes.push('【シートにあったが、どの欄にも当てはまらなかった項目】');
+    d.unknown.forEach(u=>{
+      notes.push('（'+u.where+'）'+u.line);
+      unresolved.push(`${u.where}の「${u.line.split(/[：:]/)[0]}」は、どの欄にも当てはまらないため取り込まず、メモ欄に原文のまま残しました`);
+    });
+  }
+  $('notes').value=notes.join('\n');
 
   setExpanded(true);
   snapshotExpand();
+  expandedSheet=val('sheet');
   paintAll(); updateCalc(); save();
   const draft=drafts.size;
   let msg=`展開しました（項目${got}件、登場人物${d.people.length}人）。直したうえでプロンプトを作ってください。`;
@@ -1014,25 +1179,39 @@ function setExpanded(v){
     ? 'この欄の人物が、そのまま作品の登場人物になります。自由に直してください。'
     : '書き込んだ項目だけがシートを上書きします。シートにいる人物と同じ名前を書けば、その人物の修正として扱われます。空欄のままの人物カードは無視されます。';
   const box=$('peopleBox'); if(expanded&&box) box.open=true;
-  if(!expanded) expandSnap=null;
+  if(!expanded){ expandSnap=null; expandedSheet=null; sizeIssues=[]; conflicts=[]; }
 }
 function sheetChangedSinceExpand(){
-  return expanded&&expandSnap&&val('sheet')!==expandSnap.sheet;
+  return expanded&&expandedSheet!==null&&val('sheet')!==expandedSheet;
 }
 function checkSheetDrift(){
   if(!expanded) return;
   const box=$('expandNote');
+  if(sheetChangedSinceExpand()){
+    box.className='note warn';
+    box.innerHTML='設定シートが書き換えられています。いまの下の欄には反映されていないため、再展開が必要です。<strong>このままではコピーできません。</strong>新しいシートを使うなら「下の欄に展開して練り直す」を、下の欄をやめてシートを使うなら「展開をやめてシートのまま使う」を押してください。';
+    return;
+  }
   if(!expandSnap){
     box.className='note warn';
     box.innerHTML='展開した時点の記録が見つかりません（旧版の保存データから引き継いだ場合など）。シートを書き換えたときは、もう一度「下の欄に展開して練り直す」を押してください。';
-    return;
-  }
-  if(sheetChangedSinceExpand()){
-    box.className='note warn';
-    box.innerHTML='設定シートが書き換えられています。いまの下の欄には反映されていないため、再展開が必要です。反映するには、もう一度「下の欄に展開して練り直す」を押してください。';
   }
 }
 /* 展開をやめる。展開で入った値は消し、展開後に作者が直した項目だけを上書きとして残す（人物も項目ごと） */
+/* 欄の見出し（説明の小さな字を除く） */
+function labelOf(el){
+  const f=el&&el.closest('.f'); if(!f) return '';
+  if(f.classList.contains('sub')){
+    const main=f.previousElementSibling&&f.previousElementSibling.querySelector('label');
+    return (main?main.childNodes[0].textContent.trim():'')+'（選択肢外の指定）';
+  }
+  const lab=f.querySelector('label'); return lab?lab.childNodes[0].textContent.trim():'';
+}
+/* 展開をやめる。
+   ・展開で入ったまま手を付けていない値 → 消す（シートの記述が使われる）
+   ・展開後に作者が書き換えた値 → 上書き指定として残す
+   ・展開後に作者が空欄にした値 → 「削除」指定として残す（シートの記述も使わない）
+   ・展開後に作者が消した人物 → 「登場させない」指定として残す */
 function revertExpand(){
   if(!expanded){ setStatus(2,'いまは展開していません。','ok'); return; }
   const snap=expandSnap;
@@ -1040,45 +1219,101 @@ function revertExpand(){
     if(!confirm('展開した時点の記録がないため、どの値が展開で入ったものか区別できません。下の欄をすべて空にして、設定シートの記述をそのまま使います。よろしいですか？')) return;
     EXPAND_FIELDS.forEach(k=>clearEl($(k)));
     renderHero(); $('people').innerHTML=''; pidSeq=0; addPerson();
-    drafts=new Set();
-    setExpanded(false); paintAll(); updateCalc(); save();
+    drafts=new Set(); deletions=[];
+    setExpanded(false); paintAll(); updateCalc(); updateDelNote(); save();
     setStatus(2,'下の欄をすべて空にしました。設定シートの記述だけが使われます。','ok');
     return;
   }
-  if(!confirm('展開をやめて、設定シートの記述をそのまま使います。展開で入った内容は消します（展開後に自分で直した項目だけは、上書き指定として残します）。よろしいですか？')) return;
-  let kept=0;
+  if(!confirm('展開をやめて、設定シートの記述をそのまま使います。展開で入った内容は消します。展開後に自分で書き換えた項目は上書きとして、自分で空欄にした項目は「削除」として残します。よろしいですか？')) return;
+  let kept=0; const dels=[];
+  const was=(v)=>String(v||'').trim();
   EXPAND_FIELDS.forEach(k=>{
     const e=$(k); if(!e) return;
-    if(val(k)===(snap.fields[k]||'')) clearEl(e);
-    else if(val(k)) kept++;
+    const now=val(k), before=was(snap.fields[k]);
+    if(now===before) clearEl(e);
+    else if(now) kept++;
+    else if(before&&k!=='notes') dels.push({key:'f:'+k,scope:'work',label:labelOf(e)});
   });
   $('hero').querySelectorAll('[data-k]').forEach(e=>{
-    const k=e.dataset.k, v=e.value.trim();
-    if(v===((snap.hero||{})[k]||'')) clearEl(e);
-    else if(v) kept++;
+    const k=e.dataset.k, now=e.value.trim(), before=was((snap.hero||{})[k]);
+    if(now===before) clearEl(e);
+    else if(now) kept++;
+    else if(before) dels.push({key:'h:'+k,scope:'hero',label:labelOf(e)});
   });
+  const seen=new Set();
   [...$('people').children].forEach(card=>{
-    const s=(snap.people||{})[card.dataset.pid];
+    const pid=card.dataset.pid, s=(snap.people||{})[pid];
     if(!s){ /* 展開後に自分で足した人物は、そのまま残す */
       const c=cardData(card);
       if(hasAny(c)) kept+=Object.keys(c).filter(k=>c[k]).length; else card.remove();
       return;
     }
-    let changed=0; const els=[...card.querySelectorAll('[data-k]')];
-    els.forEach(e=>{ const k=e.dataset.k; if(k!=='name'&&e.value.trim()!==(s[k]||'')&&e.value.trim()) changed++; });
+    seen.add(pid);
+    const els=[...card.querySelectorAll('[data-k]')];
     const nameEl=card.querySelector('[data-k="name"]');
-    const nameChanged=nameEl&&nameEl.value.trim()!==(s.name||'');
-    if(!changed&&!nameChanged){ card.remove(); return; }
+    const nowName=nameEl?nameEl.value.trim():'';
+    if(!nowName&&s.name){
+      /* 名前を消した人物は、登場させない指定として扱う */
+      dels.push({key:'gone:'+s.name,scope:'gone',name:s.name,label:''});
+      card.remove(); return;
+    }
+    let changed=0; const cardDels=[];
+    els.forEach(e=>{
+      const k=e.dataset.k; if(k==='name') return;
+      const now=e.value.trim(), before=was(s[k]);
+      if(now===before) return;
+      if(now) changed++;
+      else if(before) cardDels.push({key:'p:'+pid+':'+k,scope:'person',name:nowName,label:labelOf(e)});
+    });
+    const nameChanged=nowName!==was(s.name);
+    if(nameChanged&&s.name) cardDels.forEach(d=>{ d.name=`${nowName}（設定シートでの名前：${was(s.name)}）`; });
+    if(!changed&&!nameChanged&&!cardDels.length){ card.remove(); return; }
+    if(nameChanged&&s.name) card.dataset.orig=s.name;   /* 改名：シート上の元の名前を覚えておく */
     /* 直した項目と、誰を直すのか示す名前だけを残す */
-    els.forEach(e=>{ const k=e.dataset.k; if(k==='name') return; if(e.value.trim()===(s[k]||'')) clearEl(e); });
+    els.forEach(e=>{ const k=e.dataset.k; if(k==='name') return; if(e.value.trim()===was(s[k])) clearEl(e); });
     kept+=changed+(nameChanged?1:0);
+    dels.push(...cardDels);
   });
+  /* 展開後にカードごと消した人物 */
+  Object.keys(snap.people||{}).forEach(pid=>{
+    const s=snap.people[pid];
+    if(!seen.has(pid)&&s&&was(s.name)&&!dels.some(d=>d.scope==='gone'&&d.name===was(s.name)))
+      dels.push({key:'gone:'+was(s.name),scope:'gone',name:was(s.name),label:''});
+  });
+  /* 消したあと同じ名前で足し直した人物は、「登場させない」ではなく、シートのその人物への上書きとして扱う */
+  const alive=new Set([...$('people').children].map(c=>{ const e=c.querySelector('[data-k="name"]'); return e?e.value.trim():''; }).filter(Boolean));
+  const restored=dels.filter(d=>d.scope==='gone'&&alive.has(d.name)).map(d=>d.name);
+  const finalDels=dels.filter(d=>!(d.scope==='gone'&&alive.has(d.name)));
   if(!$('people').children.length) addPerson();
   renumber();
   drafts=new Set();
-  setExpanded(false); paintAll(); updateCalc(); save();
-  setStatus(2, kept?`シートをそのまま使う形に戻しました。展開後に自分で直した${kept}項目だけが、上書き指定として残っています。`
-                 :'シートをそのまま使う形に戻しました。展開で入った内容は消しました。','ok');
+  deletions=finalDels;
+  setExpanded(false); paintAll(); updateCalc(); updateDelNote(); save();
+  let msg='シートをそのまま使う形に戻しました。';
+  if(kept) msg+=`展開後に書き換えた${kept}項目は、上書き指定として残っています。`;
+  if(finalDels.length) msg+=`空欄にした・消した${finalDels.length}項目は、「削除」指定として残っています（シートの記述も使いません）。`;
+  if(restored.length) msg+=`${restored.map(n=>'「'+n+'」').join('、')}は一度消したあと同じ名前で足し直されているので、シートのその人物への上書きとして扱います。`;
+  if(!kept&&!finalDels.length&&!restored.length) msg+='展開で入った内容は消しました。';
+  setStatus(2,msg,'ok');
+}
+/* 削除指定の表示と取り消し */
+function delText(d){
+  if(d.scope==='gone') return `登場人物「${d.name}」：登場させない`;
+  if(d.scope==='hero') return `主人公の「${d.label}」：使わない`;
+  if(d.scope==='person') return `「${d.name}」の「${d.label}」：使わない`;
+  return `「${d.label}」：使わない`;
+}
+function updateDelNote(){
+  const box=$('delNote'); if(!box) return;
+  if(!deletions.length){ box.style.display='none'; return; }
+  box.style.display='block';
+  $('delList').innerHTML=deletions.map(d=>'・'+delText(d).replace(/</g,'&lt;')).join('<br>');
+}
+function undoDeletions(){
+  if(!deletions.length) return;
+  if(!confirm('削除指定をすべて取り消します。取り消した項目は、設定シートの記述がそのまま使われます。よろしいですか？')) return;
+  deletions=[]; updateDelNote(); save();
+  setStatus(2,'削除指定を取り消しました。','ok');
 }
 function mode2(){
   const r=document.querySelector('input[name="mode2"]:checked');
@@ -1109,9 +1344,45 @@ function decidedItems(){
   return out;
 }
 
+function elByKey(k){
+  if(!k) return null;
+  if(k.indexOf('f:')===0) return $(k.slice(2));
+  if(k.indexOf('h:')===0) return $('hero').querySelector('[data-k="'+k.slice(2)+'"]');
+  const m=k.match(/^p:([^:]+):(.+)$/);
+  if(m){ const c=$('people').querySelector('.person[data-pid="'+m[1]+'"]'); return c?c.querySelector('[data-k="'+m[2]+'"]'):null; }
+  return null;
+}
+/* プルダウンの値と、選択肢外の記述をまとめる */
+function combo(a,b){ return a&&b?`${a}（補足：${b}）`:(a||b||''); }
+
 /* ═════════ 第2段階のプロンプト ═════════ */
 function build2(){
   const sheet=val('sheet');
+  /* 展開した後でシートが変わっていたら、古い内容でコピーしない */
+  if(sheetChangedSinceExpand()){
+    checkSheetDrift();
+    return err(2,'設定シートが、展開したときから書き換えられています。このままでは古い内容のプロンプトになるので、コピーを止めました。新しいシートを使うなら「下の欄に展開して練り直す」、シートをそのまま使うなら「展開をやめてシートのまま使う」を押してください。','expandBtn');
+  }
+  /* 展開時に読めなかった分量が空のままなら、分量なしで進めてよいか確かめる */
+  let sizeUnspecified=false;
+  if(expanded){
+    const open=sizeIssues.filter(x=>!val(x.id));
+    if(open.length){
+      const list=open.map(x=>`${x.label}「${x.raw}」`).join('、');
+      if(!confirm(`${list}が読み取れず、空欄のままです。分量を指定しないままコピーしますか？\n（キャンセルすると、欄に数字を入れ直せます）`)){
+        return err(2,`${list}が読み取れていません。分量の欄に数字を入れてから、もう一度コピーしてください。`,open[0].id);
+      }
+      sizeUnspecified=true;
+    }
+    const openC=conflicts.filter(c=>{ const el=elByKey(c.key); return el&&el.value===c.value; });
+    if(openC.length){
+      const list=openC.map(c=>`「${c.label}」`).join('、');
+      if(!confirm(`${list}は設定シートに二度書かれていて、まだ一つに整理されていません。このままコピーすると、AIには「どちらに決めるか未定」として渡ります。コピーしますか？\n（キャンセルすると、欄を整理できます）`)){
+        const el=elByKey(openC[0].key); if(el&&el.focus) el.focus();
+        return err(2,`${list}が未整理です。欄の中の一つ目・二つ目のどちらかに整理してから、もう一度コピーしてください。`,'sheet');
+      }
+    }
+  }
   const hero=heroData();
   const heroHas=hasAny(hero);
   if(expanded){
@@ -1131,12 +1402,32 @@ function build2(){
   const unnamed=people.filter(p=>!p.name).length;
   if(unnamed) return err(2,'名前のない登場人物が'+unnamed+'人います。名前を入れてください。','sheet');
 
-  const n2=nums2();
-  const n=n2||(!expanded?sheetSize():null);
+  const es=effSize();
+  const n=es.ok?es:null;
+  /* 最終設定の点検：同じ人物を「登場させる」と「登場させない」の両方にしない */
+  {
+    const gone=deletions.filter(d=>d.scope==='gone').map(d=>d.name);
+    const clash=named.filter(nm=>gone.indexOf(nm)>=0);
+    if(clash.length) return err(2,`${clash.map(n=>'「'+n+'」').join('、')}が、登場人物の欄と「登場させない」指定の両方にあります。登場させるなら下の「削除指定をすべて取り消す」で指定を外し、登場させないなら人物カードを削除してください。`,'sheet');
+    /* プルダウンと自由記述が両方入っていて、作者がまだ選んでいない組 */
+    const pairs=[['age2','age2x','読者の年齢層'],['gender2','gender2x','読者の傾向'],['form2','form2x','想定する形態']]
+      .filter(([a,b])=>val(a)&&val(b));
+    cards.forEach((c,i)=>[['rel','relx','主人公との関係'],['arch','archx','物語上の役割']].forEach(([a,b,l])=>{
+      const A=c.querySelector('[data-k="'+a+'"]'), B=c.querySelector('[data-k="'+b+'"]');
+      if(A&&B&&A.value&&B.value.trim()) pairs.push([null,null,`${people[i].name||'登場人物'}の${l}`]);
+    }));
+    if(pairs.length){
+      const list=pairs.map(p=>'「'+p[2]+'」').join('、');
+      if(!confirm(`${list}は、選択肢と「選択肢にないとき」の欄の両方に値が入っています。両方を併記してAIに渡しますか？\n（キャンセルすると、どちらか一方を消してから、もう一度コピーできます）`))
+        return err(2,`${list}の選択肢と自由記述のどちらを使うか決めてから、もう一度コピーしてください。`,'sheet');
+    }
+  }
+  const undecided=[es.deleted.total?'総文字数':'',es.deleted.per?'1話あたりの文字数':''].filter(Boolean);
   const decided=decidedItems();
   const sheetNames=[];
   if(!expanded&&sheet){
     [hero.name,...named].filter(Boolean).forEach(nm=>{ if(sheet.indexOf(nm)>=0) sheetNames.push(nm); });
+    cards.forEach((el,i)=>{ const o=el.dataset.orig; if(o&&o!==people[i].name){ const k=sheetNames.indexOf(people[i].name); if(k>=0) sheetNames.splice(k,1); } });
   }
   const talk=(mode2()==='talk');
 
@@ -1210,16 +1501,17 @@ function build2(){
     kv('一行コンセプト',vm('concept')),kv('ログライン',vm('logline')),kv('テーマ（一文）',vm('theme2')),
     kv('読後感',vm('ending')),kv('舞台',vm('stage_')),kv('世界のきまり',vm('rules')),
     kv('売りになる要素',vm('tags')),kv('冒頭の第一場面',vm('opening')),kv('クライマックス',vm('climax'))].filter(Boolean);
-  const reader=[kv('読者の年齢層',vm('age2')),kv('読者の傾向',vm('gender2')),kv('発表先',vm('venue2')),
+  const reader=[kv('読者の年齢層',combo(vm('age2'),vm('age2x'))),kv('読者の傾向',combo(vm('gender2'),vm('gender2x'))),kv('発表先',vm('venue2')),
     kv('読者像（ペルソナ）',vm('persona2')),kv('この読者に効く要素',vm('appeal'))].filter(Boolean);
   const size=[];
-  if(n2){
-    const dm=(isDraftEl($('total2'))||isDraftEl($('per2')))?'（AI仮案）':'';
-    size.push(`総文字数：約${n2.total.toLocaleString('ja-JP')}字${isDraftEl($('total2'))?'（AI仮案）':''}`);
-    size.push(`1話あたり：約${n2.per.toLocaleString('ja-JP')}字${isDraftEl($('per2'))?'（AI仮案）':''}`);
-    size.push(`話数：約${n2.eps}話${dm}`);
+  {
+    const dT=isDraftEl($('total2'))?'（AI仮案）':'', dP=isDraftEl($('per2'))?'（AI仮案）':'';
+    if(es.src.total==='author') size.push(`総文字数：約${es.total.toLocaleString('ja-JP')}字${dT}`);
+    if(es.src.per==='author') size.push(`1話あたり：約${clampInt(val('per2'),...LIM.per).toLocaleString('ja-JP')}字${dP}`);
+    if(n&&(es.src.total==='author'||es.src.per==='author')) size.push(`話数：約${n.eps}話${srcNote(es)}${(dT||dP)?'（AI仮案）':''}`);
   }
-  if(val('form2')) size.push('形態：'+esc(vm('form2')));
+  const formV=combo(vm('form2'),vm('form2x'));
+  if(formV) size.push('形態：'+esc(formV));
 
   if(expanded){
     if(work.length){ L.push('## 作品'); work.forEach(x=>L.push(x)); L.push(''); }
@@ -1245,10 +1537,12 @@ function build2(){
   }
   if(people.length){
     L.push(expanded?'## 登場人物':'## 登場人物への上書き');
-    if(!expanded) L.push('（名前でシートの人物と突き合わせ、書かれた項目だけを上書きする。シートにいない名前は新しい人物として加える）');
+    if(!expanded) L.push('（名前でシートの人物と突き合わせ、書かれた項目だけを上書きする。「設定シートでの名前」が添えてある人物は、シートのその人物の改名であって、新しい人物ではない。それ以外で、シートのどの人物とも名前が合わない場合に限り、新しい人物として加える）');
     peopleM.forEach((p,i)=>{
-      L.push(`### ${i+1}. ${esc(people[i].name)}`);
-      [kv('主人公との関係',p.rel),kv('物語上の役割',p.arch),kv('関係性の内容',p.reldetail),kv('関係の変化',p.relchange),
+      const orig=(!expanded&&cards[i].dataset.orig&&cards[i].dataset.orig!==people[i].name)?cards[i].dataset.orig:'';
+      L.push(`### ${i+1}. ${esc(people[i].name)}`+(orig?`（設定シートでの名前：${esc(orig)}）`:''));
+      if(orig) L.push(`※ 設定シートの「${esc(orig)}」の名前を「${esc(people[i].name)}」に改める。別人として加えない。下の項目は、この人物への上書きである。`);
+      [kv('主人公との関係',combo(p.rel,p.relx)),kv('物語上の役割',combo(p.arch,p.archx)),kv('関係性の内容',p.reldetail),kv('関係の変化',p.relchange),
        kv('本名',p.realname),kv('愛称・あだ名',p.nickname),kv('年齢',p.age),kv('学年・所属・肩書',p.grade),
        kv('経歴',p.history),kv('過去のトラウマ',p.trauma),kv('得意なこと・長所',p.skill),
        kv('弱点・欠点',p.flaw),kv('性格',p.chara),kv('容姿',p.look),kv('ファッション',p.fashion),
@@ -1261,6 +1555,24 @@ function build2(){
       L.push('');
     }
   }
+  if(!expanded&&deletions.length){
+    L.push('## 作者が削除した項目');
+    L.push('（設定シートに書かれていても、次の項目は使わない。未定として扱い、必要なら補ってよいが、補った場合は「AI仮案と変更点」に挙げる。「登場させない」とある人物は物語に出さない）');
+    deletions.forEach(d=>L.push(esc(delText(d))));
+    L.push('');
+  }
+  if(!expanded&&sheet){
+    const dd=parseSheet(sheet).dups;
+    if(dd.length){
+      L.push('## 設定シートの重複');
+      L.push('（次の項目は設定シートに二度以上書かれている。どちらを採るか作者が決めていないので、勝手に一方に決めない）');
+      dd.forEach(x=>L.push(`${esc(x.where)}の「${esc(x.label)}」：`+x.vals.map((v,i)=>`${i+1}つ目「${esc(stripDraft(v))}」`).join('／')));
+      L.push(talk?'相談の最初に、どちらを採るかを作者に尋ねる。':'両方の可能性を踏まえたうえで一方を仮に選び、「AI仮案と変更点」に挙げて作者の確認を求める。');
+      L.push('');
+    }
+  }
+  if(undecided.length){ L.push('## 分量について'); L.push(`作者は${undecided.join('と')}を削除し、未定にしている。設定シートに書かれた値は使わない。ジャンルと形態から妥当な値を仮に置き、「AI仮案と変更点」に挙げて作者の確認を求める。`); L.push(''); }
+  if(sizeUnspecified){ L.push('## 分量について'); L.push('作者は分量を指定していない。ジャンルと形態から妥当な総文字数と1話あたりの文字数を仮に置き、「AI仮案と変更点」に挙げて作者の確認を求める。'); L.push(''); }
   if(val('notes')){ L.push('## 決定の理由・未決定の論点（参考）'); L.push(esc(val('notes'))); L.push(''); }
   if(val('sheetAdd')){ L.push('## 作者からの変更・追加の指定'); L.push(esc(val('sheetAdd'))); L.push(''); }
   L.push('</SETTING>');
@@ -1284,7 +1596,8 @@ function build2(){
   L.push('- 冒頭・クライマックス・結末の三点を固定し、その間を埋める順で組み立てる。結末から逆算して整合をとる。');
   L.push('- 三幕構成（状況設定／対立／解決）に、物語が大きく折れる中間点を加える。起承転結とも対応させる。');
   L.push('- 下の配分表に沿って節目を置く。');
-  if(!n) L.push('- 分量は設定の指定に従い、総文字数と1話あたりの文字数から話数を自分で割り出してから配分する。');
+  if(!n&&undecided.length) L.push(`- ${undecided.join('と')}は作者が削除して未定にしている。設定シートの値は使わず、仮に置いた値で話数を割り出してから配分する。`);
+  else if(!n) L.push('- 分量は設定の指定に従い、総文字数と1話あたりの文字数から話数を自分で割り出してから配分する。');
   if(n&&n.eps<=3) L.push('- この作品は短いため、節目は近いものを一つの場面にまとめてよい。無理に15の場面へ分けない。');
   beatLines(n).forEach(x=>L.push(x));
   L.push('');
@@ -1348,6 +1661,7 @@ function build2(){
     const asks=[];
     if(guardDraft) asks.push('承認待ちの条件案を、絶対に守る条件として採用してよいか');
     if(decided.length) asks.push(`${decided.join('と')}を、このまま進めるか、考え直すか`);
+    if(!expanded&&sheet&&parseSheet(sheet).dups.length) asks.push('設定シートに二度書かれている項目を、どちらにするか');
     if(asks.length){
       L.push('設定から読み取った骨格を3行以内でまとめ、続けて次のことを作者に尋ねてください。'+asks.map(a=>'「'+a+'」').join('、')+'。');
       L.push('この回では素案を出さず、作者の返事を待つこと。返事を受けてから「1. 冒頭の第一場面」に入る。');
@@ -1412,7 +1726,7 @@ function build2(){
     L.push(`山場は全体で${peaks(n)}箇所に置く。`);
     if(n.eps<=3) L.push('話数が少ないため、山場は話の中の場面として置く。');
   } else {
-    L.push('設定の分量指定から話数を割り出し、最初に「全体は約○話」と書いてから、各話について「話数／見出し／その話で起きること（2〜3行）／終わりの引き」を書く。');
+    L.push((undecided.length?'分量（未定の項目は仮に置いた値）から':'設定の分量指定から')+'話数を割り出し、最初に「全体は約○話」と書いてから、各話について「話数／見出し／その話で起きること（2〜3行）／終わりの引き」を書く。');
     L.push(`話数が${CHUNK}を超える場合は、上に書いた手順に従い、この回では第1話から第${CHUNK}話までにとどめる。`);
     L.push('山場の数は、総文字数4,000字あたり1箇所を目安に、3箇所から30箇所の範囲で決める。');
   }
@@ -1478,7 +1792,9 @@ function showDiff(){
   const d=$('diffNote');
   if(expanded){
     d.style.display='block';
-    d.innerHTML='この画面の欄の内容を、確定した設定としてプロンプトに入れました。設定シートの本文は添えていません。';
+    const nd=draftEls().filter(isDraftEl).length;
+    d.innerHTML='この画面の欄の内容をプロンプトに入れました。設定シートの本文は添えていません。'+
+      (nd?`黄色のAI仮案${nd}件は、未確定の案のまま渡しています。`:'AI仮案は残っていません。');
     return;
   }
   const items=[];
@@ -1488,7 +1804,9 @@ function showDiff(){
    ['venue2','発表先'],['persona2','読者像'],['form2','形態'],['genreMain','ジャンル'],['concept','一行コンセプト'],
    ['logline','ログライン'],['ending','読後感'],['rules','世界のきまり'],['appeal','効く要素'],
    ['opening','冒頭の場面'],['notes','決定の理由メモ']].forEach(([k,label])=>{ if(val(k)) items.push(label); });
-  if(nums2()) items.push('分量');
+  { const es=effSize(); if(es.src.total==='author'||es.src.per==='author') items.push('分量'); }
+  ['age2x','gender2x','form2x'].forEach(k=>{ if(val(k)) items.push(labelOf($(k))); });
+  if(deletions.length) items.push(`削除指定${deletions.length}件`);
   if(hasAny(heroData())) items.push('主人公');
   const np=peopleData().filter(hasAny).length;
   if(np) items.push(`登場人物${np}人`);
@@ -1511,9 +1829,10 @@ function pullFrom1(){
   const map=[['avoid','avoid2'],['title','title2'],['age','age2'],['gender','gender2'],
              ['venue','venue2'],['persona','persona2'],['total','total2'],['per','per2'],['form','form2']];
   const filled=[];
-  map.forEach(([a,b])=>{ const v=val(a); if(v&&$(b)){ $(b).value=v; filled.push(b); } });
-  if(val('theme')&&!val('theme2')) $('theme2').value=val('theme');
-  updateCalc(); save();
+  map.forEach(([a,b])=>{ const v=val(a); if(v&&$(b)){ $(b).value=v; setDraft($(b),false); filled.push(b); } });
+  if(val('theme')&&!val('theme2')){ $('theme2').value=val('theme'); setDraft($('theme2'),false); }
+  sizeIssues=sizeIssues.filter(x=>!val(x.id));
+  paintAll(); updateCalc(); save();
   setStatus(2,'第1段階の入力を読み込みました。不要な項目は空欄に戻してください。空欄の項目はシートの記述が使われます。','ok');
 }
 
@@ -1549,9 +1868,9 @@ function clear2(){
   if(!confirm('第2段階の入力を消します。人物の入力も消えます。よろしいですか？')) return;
   F2.forEach(resetField);
   setExpanded(false);
-  drafts=new Set();
+  drafts=new Set(); deletions=[];
   renderHero(); $('people').innerHTML=''; pidSeq=0; addPerson();
-  paintAll();
+  paintAll(); updateDelNote();
   $('diffNote').style.display='none';
   updateCalc(); save(); setStatus(2,'消しました。','ok');
 }
@@ -1596,6 +1915,7 @@ $('stage2').addEventListener('click',ev=>{
   if(el&&isDraftEl(el)){ setDraft(el,false); updateDraftNote(); save(); setStatus(2,'この項目を作者の決定として承認しました。','ok'); }
 });
 $('approveAll').addEventListener('click',approveAll);
+$('undoDel').addEventListener('click',undoDeletions);
 ['total','per','total2','per2'].forEach(k=>$(k).addEventListener('input',updateCalc));
 $('tab1').addEventListener('click',()=>showStage(1));
 $('tab2').addEventListener('click',()=>showStage(2));
